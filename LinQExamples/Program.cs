@@ -9,6 +9,8 @@ namespace LinQExamples // Note: actual namespace depends on the project name.
             List<Employee> employeeList =Data.GetEmployees();
             List<Department> departmentList = Data.GetDepartments();
 
+            /*
+             * Select and Where operators - Method Syntax
             var results = employeeList.Select(e => new
             {
                 FullName = e.FirstName + " " + e.LastName,
@@ -19,7 +21,21 @@ namespace LinQExamples // Note: actual namespace depends on the project name.
             {
                 Console.WriteLine($"{item.FullName, -20} {item.AnnualSalary, 10}");
             }
+            */
 
+            //Query syntax (without where clause)
+            var results = from emp in employeeList
+                          where emp.AnnualSalary >= 50000
+                          select new
+                          {
+                              FullName = emp.FirstName + " " + emp.LastName,
+                              AnnualSalary = emp.AnnualSalary
+                          };
+
+            foreach (var item in results)
+            {
+                Console.WriteLine($"{item.FullName,-20} {item.AnnualSalary,10}");
+            }
             Console.ReadKey();
         }
     }
