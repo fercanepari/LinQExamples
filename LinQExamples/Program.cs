@@ -24,6 +24,8 @@ namespace LinQExamples // Note: actual namespace depends on the project name.
             */
 
             //Query syntax (without where clause)
+            ////Deferred Execution Example
+            /*
             var results = from emp in employeeList
                           where emp.AnnualSalary >= 50000
                           select new
@@ -32,11 +34,65 @@ namespace LinQExamples // Note: actual namespace depends on the project name.
                               AnnualSalary = emp.AnnualSalary
                           };
 
+            employeeList.Add(new Employee
+            {
+                Id = 5,
+                FirstName = "Sam",
+                LastName = "Davis",
+                AnnualSalary = 100000.20m,
+                IsManager = true,
+                DepartmentId = 2
+            });
+
+            //The execution is differed till I fetch the data.
+            //Previous emploee was added after the query, but it is displayed 
+            //in the console.
             foreach (var item in results)
             {
                 Console.WriteLine($"{item.FullName,-20} {item.AnnualSalary,10}");
             }
+            */
+
+            ////Immediate Execution Example
+            var results = (from emp in employeeList.GetHighSalariedEmployees()
+                          select new
+                          {
+                              FullName = emp.FirstName + " " + emp.LastName,
+                              AnnualSalary = emp.AnnualSalary
+                          }).ToList(); //Here the query is executed inmediatelly
+
+            employeeList.Add(new Employee
+            {
+                Id = 5,
+                FirstName = "Sam",
+                LastName = "Davis",
+                AnnualSalary = 100000.20m,
+                IsManager = true,
+                DepartmentId = 2
+            });
+
+            foreach (var item in results)
+            {
+                Console.WriteLine($"{item.FullName,-20} {item.AnnualSalary,10}");
+            }
+
+
             Console.ReadKey();
+        }
+    }
+
+    public static class EnumerableCollectionExtensionMethods
+    {
+        public static IEnumerable<Employee> GetHighSalariedEmployees(this IEnumerable<Employee> employees)
+        {
+            foreach (Employee emp in employees)
+            {
+
+                Console.WriteLine($"Accessing employee: {emp.FirstName + " " + emp.LastName}");
+
+                if (emp.AnnualSalary >= 50000)
+                    yield return emp;
+            }
         }
     }
 
