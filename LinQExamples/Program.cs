@@ -1,7 +1,6 @@
 ﻿using System;
 
-namespace LinQExamples // Note: actual namespace depends on the project name.
-{
+namespace LinQExamples 
     internal class Program
     {
         static void Main(string[] args)
@@ -129,6 +128,26 @@ namespace LinQExamples // Note: actual namespace depends on the project name.
 
             //}
 
+            ////GroupJoin Operator Example - Query Syntax
+            var results = from dept in departmentList
+                          join emp in employeeList
+                          on dept.Id equals emp.DepartmentId
+                          into employeeGroup  // for group join
+                          select new
+                          {
+                              Employees = employeeGroup,
+                              DepartmentName = dept.LongName
+                          };
+
+            foreach (var item in results)
+            {
+                Console.WriteLine($"Department Name: {item.DepartmentName}");
+                foreach (var emp in item.Employees)
+                    Console.WriteLine($"\t{emp.FirstName} {emp.LastName}");
+
+            }
+
+
 
             Console.ReadKey();
         }
@@ -209,7 +228,7 @@ namespace LinQExamples // Note: actual namespace depends on the project name.
                 LastName = "Stevens",
                 AnnualSalary = 30000.2m,
                 IsManager = false,
-                DepartmentId = 3
+                DepartmentId = 2
             };
             employees.Add(employee);
 
